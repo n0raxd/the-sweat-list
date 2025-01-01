@@ -1,0 +1,149 @@
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local Camera = workspace.CurrentCamera
+
+local toolDisplays = {}
+
+local function hideUsername(character)
+    local humanoid = character:WaitForChild("Humanoid", 5)
+    if humanoid then
+        humanoid.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None
+        humanoid.NameDisplayDistance = 0
+        humanoid.HealthDisplayDistance = 0
+    end
+end
+
+local function createOrUpdateToolDisplay(character)
+    local head = character:FindFirstChild("Head")
+    if not head then return end
+
+    local player = Players:GetPlayerFromCharacter(character)
+    if not player or player == LocalPlayer then return end
+
+    -- Check if the BillboardGui exists
+    local billboardGui = character:FindFirstChild("ToolDisplay")
+    if not billboardGui then
+        -- Create a new BillboardGui if none exists
+        billboardGui = Instance.new("BillboardGui")
+        billboardGui.Name = "ToolDisplay"
+        billboardGui.Size = UDim2.new(0, 200, 0, 60)  -- Static size, no dynamic scaling
+        billboardGui.StudsOffset = Vector3.new(0, 3, 0)
+        billboardGui.Adornee = head
+        billboardGui.AlwaysOnTop = true
+        billboardGui.MaxDistance = 9000
+
+        -- Username Label
+        local usernameLabel = Instance.new("TextLabel")
+        usernameLabel.Name = "Username"
+        usernameLabel.Size = UDim2.new(1, 0, 0.3, 0)
+        usernameLabel.BackgroundTransparency = 1
+        usernameLabel.TextColor3 = Color3.new(1, 1, 1)
+        usernameLabel.TextStrokeTransparency = 0
+        usernameLabel.TextStrokeColor3 = Color3.new(0, 0, 0)
+        usernameLabel.Font = Enum.Font.GothamBold
+        usernameLabel.TextScaled = true
+        usernameLabel.Text = player.Name
+        usernameLabel.Parent = billboardGui
+
+        -- Tool Text Label
+        local textLabel = Instance.new("TextLabel")
+        textLabel.Name = "ToolText"
+        textLabel.Size = UDim2.new(1, 0, 0.7, 0)
+        textLabel.Position = UDim2.new(0, 0, 0.3, 0)
+        textLabel.BackgroundTransparency = 1
+        textLabel.TextColor3 = Color3.new(1, 1, 1)
+        textLabel.TextStrokeTransparency = 0
+        textLabel.TextStrokeColor3 = Color3.new(0, 0, 0)
+        textLabel.Font = Enum.Font.GothamBold
+        textLabel.TextScaled = true
+        textLabel.Parent = billboardGui
+
+        -- Parent the BillboardGui
+        billboardGui.Parent = character
+        toolDisplays[character] = billboardGui
+    end
+
+    -- Update tool display text
+    local toolText = ""
+    local equippedTool = character:FindFirstChildOfClass("Tool")
+    if equippedTool then
+        toolText = "Equipped: " .. equippedTool.Name .. "\n"
+    else
+        toolText = "Equipped: None\n"
+    end
+
+    toolText = toolText .. "Backpack: "
+    local backpackTools = {}
+    for _, tool in ipairs(player.Backpack:GetChildren()) do
+        if tool:IsA("Tool") then
+            table.insert(backpackTools, tool.Name)
+        end
+    end
+
+    if #backpackTools > 0 then
+        toolText = toolText .. table.concat(backpackTools, ", ")
+    else
+        toolText = toolText .. "Empty"
+    end
+
+    -- Update the ToolText in the GUI
+    character.ToolDisplay.ToolText.Text = toolText
+end
+
+local function cleanupCharacter(character)
+    if toolDisplays[character] then
+        toolDisplays[character]:Destroy()
+        toolDisplays[character] = nil
+    end
+end
+
+local function setupCharacter(character)
+    local player = Players:GetPlayerFromCharacter(character)
+    if not player or player == LocalPlayer then return end
+
+    hideUsername(character)
+    createOrUpdateToolDisplay(character)
+
+    -- Handle character respawn or removal
+    character.ChildAdded:Connect(function(child)
+        if child:IsA("Tool") then
+            createOrUpdateToolDisplay(character)
+        end
+    end)
+    character.ChildRemoved:Connect(function(child)
+        if child:IsA("Tool") then
+            createOrUpdateToolDisplay(character)
+        end
+    end)
+
+    player.Backpack.ChildAdded:Connect(function(tool)
+        createOrUpdateToolDisplay(character)
+    end)
+    player.Backpack.ChildRemoved:Connect(function(tool)
+        createOrUpdateToolDisplay(character)
+    end)
+end
+
+-- Listen for player character changes
+for _, player in ipairs(Players:GetPlayers()) do
+    if player ~= LocalPlayer and player.Character then
+        setupCharacter(player.Character)
+    end
+    player.CharacterAdded:Connect(function(character)
+        setupCharacter(character)
+    end)
+    player.CharacterRemoving:Connect(function(character)
+        cleanupCharacter(character)
+    end)
+end
+
+Players.PlayerAdded:Connect(function(player)
+    if player ~= LocalPlayer then
+        player.CharacterAdded:Connect(function(character)
+            setupCharacter(character)
+        end)
+        player.CharacterRemoving:Connect(function(character)
+            cleanupCharacter(character)
+        end)
+    end
+end)
