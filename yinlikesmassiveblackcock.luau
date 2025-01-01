@@ -35,14 +35,10 @@ end
 -- Initial fetch of usernames
 updateUsernames()
 
--- Re-fetch usernames every minute
-local RunService = game:GetService("RunService")
-RunService.Stepped:Connect(function(time, deltaTime)
-    if math.floor(time % 60) == 0 then
-        updateUsernames()
-        checkPlayers(usernames)
-    end
-end)
+while task.wait() do
+checkPlayers(usernames)
+end
+
 
 -- Check if a player in the game matches any username from the list
 local function checkPlayers(usernames)
