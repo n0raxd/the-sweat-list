@@ -1,5 +1,5 @@
 -- URL to fetch usernames from
-
+pcall(function()
 print("running the shit lol")
 local url = "https://raw.githubusercontent.com/n0raxd/the-sweat-list/refs/heads/main/sweats?token=$(date +%s)"
 local usernames = {}
@@ -168,3 +168,4 @@ end)
 
 -- Check current players already in the game
 checkPlayers(usernames)
+end)
