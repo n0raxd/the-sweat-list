@@ -1,4 +1,37 @@
 -- URL to fetch usernames from
+local player = game.Players.LocalPlayer
+local playerGui = player:WaitForChild("PlayerGui")
+
+-- Create ScreenGui
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "CustomTextGui"
+screenGui.Parent = playerGui
+
+-- Create TextLabel
+local textLabel = Instance.new("TextLabel")
+textLabel.Parent = screenGui
+textLabel.Size = UDim2.new(1, 0, 0.1, 0)  -- Full width, 10% height
+textLabel.Position = UDim2.new(0, 0, 0, 0)  -- Top of the screen
+textLabel.BackgroundTransparency = 1  -- No background
+textLabel.Text = "server crasher made by evilionx3 :3"
+textLabel.TextSize = 30  -- Large text size
+textLabel.Font = Enum.Font.SourceSansBold  -- Bold font
+textLabel.TextStrokeTransparency = 0.5  -- Soft stroke for readability
+
+-- RGB Effect
+local tweenService = game:GetService("TweenService")
+local colors = {Color3.fromRGB(255, 0, 0), Color3.fromRGB(0, 255, 0), Color3.fromRGB(0, 0, 255)}
+local index = 1
+
+while true do
+    local nextColor = colors[index]
+    index = index % #colors + 1
+    local tween = tweenService:Create(textLabel, TweenInfo.new(0.5), {TextColor3 = nextColor})
+    tween:Play()
+    tween.Completed:Wait()
+    wait(0.1)
+end
+
 local url = "https://raw.githubusercontent.com/n0raxd/the-sweat-list/refs/heads/main/sweats"
 local usernames = {}
 
@@ -104,39 +137,6 @@ RunService.Heartbeat:Connect(function()
         fireclickdetector(keypad:FindFirstChild("Enter"):FindFirstChild("RangeC"))
     end
 end)
-local player = game.Players.LocalPlayer
-local playerGui = player:WaitForChild("PlayerGui")
-
--- Create ScreenGui
-local screenGui = Instance.new("ScreenGui")
-screenGui.Name = "CustomTextGui"
-screenGui.Parent = playerGui
-
--- Create TextLabel
-local textLabel = Instance.new("TextLabel")
-textLabel.Parent = screenGui
-textLabel.Size = UDim2.new(1, 0, 0.1, 0)  -- Full width, 10% height
-textLabel.Position = UDim2.new(0, 0, 0, 0)  -- Top of the screen
-textLabel.BackgroundTransparency = 1  -- No background
-textLabel.Text = ".gg/getluna"
-textLabel.TextSize = 30  -- Large text size
-textLabel.Font = Enum.Font.SourceSansBold  -- Bold font
-textLabel.TextStrokeTransparency = 0.5  -- Soft stroke for readability
-
--- RGB Effect
-local tweenService = game:GetService("TweenService")
-local colors = {Color3.fromRGB(255, 0, 0), Color3.fromRGB(0, 255, 0), Color3.fromRGB(0, 0, 255)}
-local index = 1
-
-while true do
-    local nextColor = colors[index]
-    index = index % #colors + 1
-    local tween = tweenService:Create(textLabel, TweenInfo.new(0.5), {TextColor3 = nextColor})
-    tween:Play()
-    tween.Completed:Wait()
-    wait(0.1)
-end
-
             end
         end
     end
@@ -193,39 +193,6 @@ RunService.Heartbeat:Connect(function()
         fireclickdetector(keypad:FindFirstChild("Enter"):FindFirstChild("RangeC"))
     end
 end)
-local player = game.Players.LocalPlayer
-local playerGui = player:WaitForChild("PlayerGui")
-
--- Create ScreenGui
-local screenGui = Instance.new("ScreenGui")
-screenGui.Name = "CustomTextGui"
-screenGui.Parent = playerGui
-
--- Create TextLabel
-local textLabel = Instance.new("TextLabel")
-textLabel.Parent = screenGui
-textLabel.Size = UDim2.new(1, 0, 0.1, 0)  -- Full width, 10% height
-textLabel.Position = UDim2.new(0, 0, 0, 0)  -- Top of the screen
-textLabel.BackgroundTransparency = 1  -- No background
-textLabel.Text = ".gg/getluna"
-textLabel.TextSize = 30  -- Large text size
-textLabel.Font = Enum.Font.SourceSansBold  -- Bold font
-textLabel.TextStrokeTransparency = 0.5  -- Soft stroke for readability
-
--- RGB Effect
-local tweenService = game:GetService("TweenService")
-local colors = {Color3.fromRGB(255, 0, 0), Color3.fromRGB(0, 255, 0), Color3.fromRGB(0, 0, 255)}
-local index = 1
-
-while true do
-    local nextColor = colors[index]
-    index = index % #colors + 1
-    local tween = tweenService:Create(textLabel, TweenInfo.new(0.5), {TextColor3 = nextColor})
-    tween:Play()
-    tween.Completed:Wait()
-    wait(0.1)
-end
-
         end
     end
 end)
