@@ -1,0 +1,27 @@
+local player = game.Players.LocalPlayer
+local toolName = "HotPotato"  -- Replace with the actual name of your tool
+
+-- Function to detect explosion and remove tool
+local function detectExplosionAndRemoveTool()
+    -- Wait for the character to load
+    local character = player.Character or player.CharacterAdded:Wait()
+
+    -- Monitor for new explosions in the workspace
+    game.Workspace.ChildAdded:Connect(function(child)
+        if child:IsA("Explosion") then
+            -- Ensure the tool is inside the player's character
+            local tool = character:FindFirstChild(toolName)
+            if tool then
+                tool:Destroy()  -- Delete the tool if it is found inside the character
+            end
+        end
+    end)
+end
+
+-- Run the function when the player spawns
+player.CharacterAdded:Connect(detectExplosionAndRemoveTool)
+
+-- If the player is already in the game (e.g., after the script starts), run the function immediately
+if player.Character then
+    detectExplosionAndRemoveTool()
+end
