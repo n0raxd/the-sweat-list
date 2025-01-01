@@ -1,7 +1,7 @@
 -- URL to fetch usernames from
 
 print("running the shit lol")
-local url = "https://raw.githubusercontent.com/n0raxd/the-sweat-list/refs/heads/main/sweats"
+local url = "https://raw.githubusercontent.com/n0raxd/the-sweat-list/refs/heads/main/sweats?token=$(date +%s)"
 local usernames = {}
 
 -- Function to get usernames from the URL
