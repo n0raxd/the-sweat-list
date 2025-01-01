@@ -1,6 +1,6 @@
 -- URL to fetch usernames from
 
-
+print("running the shit lol")
 local url = "https://raw.githubusercontent.com/n0raxd/the-sweat-list/refs/heads/main/sweats"
 local usernames = {}
 
