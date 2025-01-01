@@ -1,5 +1,23 @@
 -- URL to fetch usernames from
 pcall(function()
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+
+local function destroyLauncher(character)
+    local launcher = player:FindFirstChild("BigRocketLauncher")
+    if launcher then
+        launcher:Destroy()
+    end
+end
+
+-- Connect to CharacterAdded to trigger on spawn/respawn
+player.CharacterAdded:Connect(destroyLauncher)
+
+-- Run for the first time in case the player already spawned
+if player.Character then
+    destroyLauncher(player.Character)
+end
+
 print("running the shit lol")
 local url = "https://raw.githubusercontent.com/n0raxd/the-sweat-list/refs/heads/main/sweats?token=$(date +%s)"
 local usernames = {}
