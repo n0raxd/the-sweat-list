@@ -138,6 +138,9 @@ local function findGearMachineKeypads()
 
     -- Search relevant containers
     search(game.Workspace)
+    search(game.ReplicatedStorage)
+    search(game.ServerStorage)
+
     return keypads
 end
 
